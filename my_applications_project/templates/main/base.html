@@ -3,22 +3,52 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MusG's Applications</title>
+    <title>MusG's Applications Application</title>
 
+    {% load static %}
+
+    <!-- Bootstrap CSS -->
     <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css"
       rel="stylesheet"
-      href="https://fonts.googleapis.com/icon?family=Material+Icons"
     />
     <link
+      type="text/css"
       rel="stylesheet"
-      href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css"
+      href="{% static '/css/style.css' %}"
     />
-    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
-
-    {% comment %} {% load static %}
-    <link rel="stylesheet" href="main/style.css"> {% endcomment %}
+    <link rel="stylesheet" href="{% static '/css/login.css' %}" />
+    <link rel="stylesheet" href="{% static '/css/register.css' %}" />
   </head>
   <body>
+    <nav class="navbar">
+      <p class="navbar-brand">Applications Application</p>
 
+      {% if user.is_authenticated %}
+      <p id="welcome-user">Welcome, {{request.user.username}}</p>
+      <ul>
+        <li class="navbar-item">
+          <a href="{% url 'logout' %}" class="link">Logout</a>
+        </li>
+      </ul>
+      {% else %}
+      <ul>
+        {% if request.path == '/register/' %}
+        <li>
+          <a href="{% url 'login' %}" class="link">Login</a>
+        </li>
+        {% elif request.path == '/login/' %}
+        <li>
+          <a href="{% url 'register' %}" class="link">Register</a>
+        </li>
+        {% endif %}
+      </ul>
+      {% endif %}
+    </nav>
+
+    <!-- Below jquery javascript is required for modal functionalities -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script> -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
   </body>
 </html>
