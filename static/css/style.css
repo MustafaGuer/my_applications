@@ -35,22 +35,31 @@
 .navbar {
   display: flex;
   justify-content: space-evenly;
-  background: #f16498;
+  align-items: center;
+  background: #2da0ff;
   color: #fff;
   padding: 1%;
 }
 .navbar p,
 a {
   font-size: large;
+  color: #fff;
 }
 .navbar ul {
   display: flex;
+}
+.navbar ul, .navbar p {
+  margin-bottom: 0;
 }
 .navbar a:link {
   text-decoration: none;
   color: #fff;
 }
 .navbar a:hover {
+  text-decoration: underline;
+  color: #fff;
+}
+.navbar-brand:hover {
   text-decoration: underline;
   color: #fff;
 }
@@ -84,6 +93,8 @@ a {
   display: flex;
   justify-content: center;
   align-items: center;
+  display: flex;
+  flex-direction: column;
 }
 .create-application-form input {
   width: 300px;
