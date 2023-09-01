@@ -9,17 +9,216 @@
       {% csrf_token %}
       <div>
         <label for="company" class="form-label">Company</label>
-        <input type="text" name="company" id="company" class="form-control" required />
+        <input
+          type="text"
+          name="company"
+          id="company"
+          class="form-control"
+          required
+        />
       </div>
-      <div>
+      <div class="mt-2">
         <label for="job-title" class="form-label">Job title</label>
-        <input type="text" name="job-title" id="job-title" class="form-control" required />
+        <input
+          type="text"
+          name="job-title"
+          id="job-title"
+          class="form-control"
+          required
+        />
       </div>
-      <div>
-        <label for="company-name" class="form-label">Applied on</label>
-        <input type="date" name="company-name" id="company-name" class="form-control" required />
+      <div class="mt-2">
+        <label for="applied-on" class="form-label">Applied on</label>
+        <input
+          type="date"
+          name="applied-on"
+          id="applied-on"
+          class="form-control"
+          required
+        />
       </div>
+      <div class="d-flex align-items-center mt-2">
+        <input
+          type="checkbox"
+          name="get-invitation"
+          id="get-invitation"
+          class="form-check-input"
+        />
+        <label for="get-invitation" class="form-check-label"
+          >Get an invitation?</label
+        >
+      </div>
+      <button type="submit" class="btn btn-primary mt-3 lh-1">Submit</button>
     </form>
   </div>
+
+  {% for i in page_obj %}
+  <div class="application-container">
+    <div class="applications">
+      <div>
+        <p>{{i.company}}</p>
+        <p>{{i.applied_on|date:"d.m.Y"}}</p>
+      </div>
+      <div>
+        <p>{{i.job_title}}</p>
+        {% if i.get_an_invitation %}
+        <p>Invited</p>
+        {% else %}
+        <p>Not invited</p>
+        {% endif %}
+      </div>
+    </div>
+    <div class="applications-actions">
+      <ul class="crud-buttons d-flex gap-3">
+        <li>
+          <button
+            id="edit-application"
+            data-toggle="modal"
+            data-target="#editApplicationModal_{{ i.id }}"
+          >
+            Edit
+          </button>
+
+          <div
+            class="modal fade"
+            id="editApplicationModal_{{ i.id }}"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="editApplicationModalLabel"
+            aria-hidden="true"
+          >
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="editApplicationModalLabel">
+                    Update Application
+                  </h5>
+                  <button
+                    type="button"
+                    class="close"
+                    data-dismiss="modal"
+                    aria-label="Close"
+                  >
+                    <span aria-hidden="true" id="close-edit-modal"
+                      >&times;</span
+                    >
+                  </button>
+                </div>
+                <form
+                  action="{% url 'update_application' i.id %}"
+                  method="post"
+                  class="edit-application w-100"
+                >
+                  {% csrf_token %}
+                  <div class="modal-body w-100">
+                    <input
+                      type="text"
+                      name="application_company_{{ i.id }}"
+                      value="{{ i.company }}"
+                      required
+                      size="40"
+                      class="w-100 my-2"
+                    />
+                    <input
+                      type="text"
+                      name="application_job_{{ i.id }}"
+                      value="{{ i.job_title }}"
+                      required
+                      size="40"
+                      class="w-100 my-2"
+                    />
+                    <input type="date" name="application_date_{{ i.id }}"
+                    value="{{ i.applied_on | date:"Y-m-d" }}" required
+                    size="40"class="w-100 my-2">
+                    <div class="d-flex my-2">
+                      <input
+                        id="invited"
+                        type="checkbox"
+                        name="application_invited_{{ i.id }}"
+                        value="{{ i.get_an_invitation }}"
+                        required
+                        size="40"
+                        class="me-2"
+                      />
+                      <label for="invited">Invited?</label>
+                    </div>
+                  </div>
+                  <div class="modal-footerr">
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-secondary"
+                      data-dismiss="modal"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      class="btn btn-sm btn-primary"
+                      id="edit-application-submit"
+                    >
+                      Submit
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <a
+            href="{% url 'complete_application' i.id %}"
+            id="complete-application"
+            >Completed</a
+          >
+        </li>
+        <li>
+          <a href="{% url 'delete_application' i.id %}" id="delete-application"
+            >Delete</a
+          >
+        </li>
+      </ul>
+    </div>
+  </div>
+  {% endfor %}
+
+  <nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+      {% if page_obj.has_previous %}
+      <li class="page-item previous-page">
+        <a
+          href="?page={{ page_obj.previous_page_number }}"
+          tabindex="-1"
+          class="page-link"
+          >Previous</a
+        >
+      </li>
+      {% else %}
+      <li class="page-item disabled previous-page">
+        <a href="?page=0" tabindex="-1" class="page-link">Previous</a>
+      </li>
+      {% endif %}
+
+      <li class="page-item active current-page">
+        <a href="?page={{ page_obj.number }}" class="page-link"
+          >{{ page_obj.number }}</a
+        >
+      </li>
+
+      {% if page_obj.has_next %}
+      <li class="page-item next-page">
+        <a
+          href="?page={{ page_obj.next_page_number }}"
+          tabindex="-1"
+          class="page-link"
+          >Next</a
+        >
+      </li>
+      {% else %}
+      <li class="page-item disabled next-page">
+        <a href="?page=0" tabindex="-1" class="page-link">Next</a>
+      </li>
+      {% endif %}
+    </ul>
+  </nav>
 </div>
 {% endblock content %}
