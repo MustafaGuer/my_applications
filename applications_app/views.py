@@ -14,15 +14,8 @@ def home(req: HttpRequest):
         company = req.POST.get('company')
         job_title = req.POST.get('job-title')
         applied_on = req.POST.get('applied-on')
-
         applied_on_date_obj = datetime.strptime(applied_on, '%Y-%m-%d')
-
-        get_an_invitation = req.POST.get('get-invitation')
-        
-        if get_an_invitation:
-            get_an_invitation = True
-        else:
-            get_an_invitation = False
+        get_an_invitation = bool(req.POST.get('get-invitation'))
         application = ApplicationItem.objects.create(
             company=company, job_title=job_title, get_an_invitation=get_an_invitation, applied_on=applied_on, user=req.user)
         return redirect('home')
@@ -44,6 +37,10 @@ def home(req: HttpRequest):
 def update_application(req: HttpRequest, pk):
     application = get_object_or_404(ApplicationItem, id=pk, user=req.user)
     application.company = req.POST.get(f"application_company_{pk}")
+    application.job_title = req.POST.get(f"application_job_{pk}")
+    application.applied_on = req.POST.get(f"application_date_{pk}")
+    application.get_an_invitation = bool(
+        req.POST.get(f"application_invited_{pk}"))
     application.save()
     return HttpResponseRedirect(req.META.get('HTTP_REFERER'))
 

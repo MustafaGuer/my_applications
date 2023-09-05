@@ -135,8 +135,8 @@
                         id="invited"
                         type="checkbox"
                         name="application_invited_{{ i.id }}"
-                        value="{{ i.get_an_invitation }}"
-                        required
+                        value="on"
+                        {% if i.get_an_invitation %}checked{% endif %}
                         size="40"
                         class="me-2"
                       />
